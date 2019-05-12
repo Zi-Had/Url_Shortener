@@ -80,7 +80,6 @@ module.exports.createUser = async (req,res)=>{
    }
 
 
-
 //Testing
     // const user = new User(req.body)
     // user.save()
