@@ -1,37 +1,29 @@
 const express = require('express') ;
 const app     = express() ;
-const PORT    = 3000 ;
-const hbs     = require("express-handlebars") ;
-//Middleware
-app.use(express.urlencoded({extended: true}))
+const PORT    = process.env.PORT || 4000 ;
+const expressEjsLayouts = require('express-ejs-layouts')
+const expressValidator = require('express-validator')
 
-//Template Engine
-app.engine('.hbs', hbs({extname: '.hbs'}));
-app.set('view engine', '.hbs')
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json())
+app.use(express.static(__dirname + '/public'))
+app.use(expressEjsLayouts)
+app.use(expressValidator())
 
-// Route
-app.get('/',(req,res)=>{
-    //Param , Query , Body [We Can Use This KeyWords]
+//Ejs setup
+app.set('view engine', 'ejs')
 
-    //Without Template Engine 
-    // res.send(
-    //     `<form action="/" method="post">
-    //        <input   name="name" placeholder="Name">
-    //        <input  name="age" placeholder="Age">
-    //        <button>Submit</button>
-    //   </form>
-    //     `)
+//Global Variable
+app.locals.appName='Node Shortener'
 
-    //With Template Engine (Render)
-    res.render('index',{
-        name:"Rakib"
-    })
-})
-app.post("/",(req,res)=>{
-    res.send('My Name Is ' + req.body.name 
-    +  " And My Age Is "+ req.body.age )
-})
+//Process.env 
+require('dotenv').config()
 
+//Database
+require('./db')
+
+const authRoutes = require('./routes/auth');
+app.use('/auth',authRoutes)
 
 app.listen(PORT , ()=>{
     console.log(`Server Is Running On ${PORT}`)
