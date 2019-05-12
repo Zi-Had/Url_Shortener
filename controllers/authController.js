@@ -78,8 +78,7 @@ module.exports.createUser = async (req,res)=>{
    }else{
        res.json(req.validationErrors())
    }
-
-
+   
 //Testing
     // const user = new User(req.body)
     // user.save()
