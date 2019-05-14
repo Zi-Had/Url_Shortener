@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 
+//For Coloring Console Text
+require('colors')
 
-mongoose.connect('mongodb+srv://rakib:@tlas1011210249@cluster0-7k4sx.mongodb.net/test?retryWrites=true', {useNewUrlParser: true})
+mongoose.connect(process.env.DB_URL, {useNewUrlParser: true})
         .then(d=>{
-         console.log('database Connected ..');
+         console.log('database Connected'.random);
         })
         .catch(e=>{
-                console.log(e);
+        console.log(`${e}`.red);
         })
