@@ -33,17 +33,17 @@ module.exports.createUser = async (req,res)=>{
     // Email Required
     if(req.body.email.length === 0){
         req.check('email','Email is required').custom(()=>false)
-    }else if(req.body.email.length > 0){
-        //Email exist
-        const existEmail = await User.findOne({email:req.body.email})
-        if(existEmail){
-            req.check('email',`Email is already exist`).custom(()=>false)
-            
-        }
-    }
-    else {
+    }else {
         req.check('email', 'Email is not valid').isEmail() 
     }
+
+    //Email exist
+    const existEmail = await User.findOne({email:req.body.email})
+    if(existEmail){
+         req.check('email',`Email is already exist`).custom(()=>false)
+            
+    }
+    
 
     //password
 
@@ -68,16 +68,18 @@ module.exports.createUser = async (req,res)=>{
             if (newuser) {
                 // res.json({
                 //     message:"User Created Successfully"
-
                 // })
+                req.flash('success_msg' ,'You Have Registred Successfully !')
+
                 res.redirect('/auth/login')
             }
         } catch (err) {
 
         }
    }else{
-       res.json(req.validationErrors())
+       req.flash('errors' , req.validationErrors()) 
    }
+   res.redirect('back')
    
 //Testing
     // const user = new User(req.body)
