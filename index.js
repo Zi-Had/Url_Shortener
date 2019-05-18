@@ -36,12 +36,13 @@
   app.use(async(req,res,next) =>{
     app.locals.errors = req.flash('errors')
     app.locals.success_msg = req.flash('success_msg')
-    app.locals.isAuthenticated = req.isAuthenticated ;
 
     req.isAuthenticated = req.session.authUserId ? true:false
+    app.locals.isAuthenticated = req.isAuthenticated 
+
     if(req.session.authUserId){
       const user = await User.findById(req.session.authUserId)
-      req.user = user ;
+      // req.user = user ;
       app.locals.authenticatedUser = req.user 
     }
     next()
@@ -58,7 +59,7 @@
   const shortenerRoutes = require('./routes/shortener');
 
   app.use('/auth',authRoutes)
-  app.use('/auth',shortenerRoutes)
+  app.use('/',shortenerRoutes)
 
 
 

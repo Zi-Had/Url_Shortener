@@ -11,26 +11,32 @@ module.exports.loginUser = async(req,res)=>{
        if(!fetchedUser){
         req.check('username','User Not Found !').custom(()=>false)
        }
+
        if(fetchedUser){
+           if(req.body.password.length === 0 ){
+               req.check('password','Enter your Password').custom(()=>false)
+           }
+
           const passwordMatched =  bcrypt.compareSync(req.body.password , fetchedUser.password)
-
-          req.session.authUserId = fetchedUser._id
-
-          if(passwordMatched){
-            req.flash('success_msg','You Have Logged In Successfully')
-          }else{
+           
+           if(passwordMatched){
+               req.flash('success_msg','You Have Logged in Successfully')
+               //Problem
+               //TODO:
+               //req.session.authUserId = fetchedUser._id
+           }else{
             req.check('password',`password Doesn't match !`).custom(()=>false)
-          }
-          
-
-
-       if(req.validationErrors()) req.flash('errors' , req.validationErrors()) ;
+           }
+      }
+       
     }
-    res.redirect('back')
     
+    if(req.validationErrors()) req.flash('errors' , req.validationErrors()) 
+
+    res.redirect('/')
     
-    }
 }
+
 
 module.exports.logoutUser = (req,res) => {
     req.session.authUserId = null ;
