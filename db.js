@@ -5,8 +5,8 @@ require('colors')
 
 mongoose.connect(process.env.DB_URL || 'mongodb+srv://rakib:@tlas1011210249@cluster0-7k4sx.mongodb.net/test?retryWrites=true'  , {useNewUrlParser: true})
         .then(d=>{
-         console.log('database Connected'.random);
+         console.log('database Connected'.bgBlue.bold);
         })
         .catch(e=>{
-        console.log(`${e}`.red);
+        console.log(`${e}`.bgRed.bold);
         })

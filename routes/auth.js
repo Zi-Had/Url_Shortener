@@ -1,12 +1,17 @@
 const Router = require('express').Router();
-const {createUser}  = require('../controllers/authController')
+const ifUserNotLoggedIn = require('../middlewares/ifUserNotLoggedIn')
 
- Router.get('/login',(req,res)=>{
-    res.render('auth/login')
+const {createUser,loginUser,logoutUser}  = require('../controllers/authController')
+
+ Router.get('/login',ifUserNotLoggedIn,(req,res)=>{
+    res.render('auth/login',{title:"Login"})
 })
- Router.get('/register',(req,res)=>{
-    res.render('auth/register')
+ Router.get('/register',ifUserNotLoggedIn,(req,res)=>{
+    res.render('auth/register',{title:"Register"})
  })
  Router.post("/register", createUser)
+ Router.post("/login", loginUser)
+ Router.get("/logout", logoutUser)
+
 
 module.exports = Router ;
