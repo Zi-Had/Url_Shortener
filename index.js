@@ -7,6 +7,9 @@
   const cookieParser = require('cookie-parser')
   const flash = require('connect-flash')
   const User = require('./Models/User')
+  const passport = require('passport')
+  const morgan = require('morgan')
+
 
   //Database
   require('./db')
@@ -15,6 +18,10 @@
   //Process.env 
   require('dotenv').config()
 
+  require('./passport/passport')
+
+  //Dev
+  app.use(morgan('dev'))
   //Session
   app.use(session({
     secret: process.env.SECRET,
@@ -23,7 +30,10 @@
   }))
   //Cookie
   app.use(cookieParser())
-
+  //Passport
+  app.use(passport.initialize())
+  app.use(passport.session())
+  
   app.use(flash())
   //Middlewares
   app.use(express.urlencoded({ extended: true }))
@@ -35,16 +45,17 @@
 
   app.use(async(req,res,next) =>{
     app.locals.errors = req.flash('errors')
+    app.locals.error = req.flash('error')
     app.locals.success_msg = req.flash('success_msg')
+    app.locals.isAuthenticated = req.isAuthenticated()
+    app.locals.authenticatedUser = req.user 
 
-    req.isAuthenticated = req.session.authUserId ? true:false
-    app.locals.isAuthenticated = req.isAuthenticated 
-
-    if(req.session.authUserId){
-      const user = await User.findById(req.session.authUserId)
-      // req.user = user ;
-      app.locals.authenticatedUser = req.user 
-    }
+    // req.isAuthenticated = req.session.authUserId ? true:false
+    // if(req.session.authUserId){
+    //   const user = await User.findById(req.session.authUserId)
+    //   // req.user = user ;
+    //   
+    // }
     next()
   })
   //Ejs setup
@@ -61,10 +72,13 @@
   app.use('/auth',authRoutes)
   app.use('/',shortenerRoutes)
 
-
+  app.get('/logout',(req,res)=>{
+   req.logOut()
+   res.send('logout')
+})
 
   app.get('/get',(req,res)=>{
-      res.json(req.session)
+      res.json(req.user)
   })
 
   app.listen(PORT , ()=>{

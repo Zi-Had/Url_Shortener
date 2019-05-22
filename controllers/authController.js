@@ -1,48 +1,47 @@
 const User   = require('../Models/User')
 const bcrypt = require('bcryptjs')
 
-module.exports.loginUser = async(req,res)=>{
+// module.exports.loginUser = async(req,res)=>{
   
-   if(req.body.username.length === 0){
-    req.check('username','Username is required').custom( () => false )
+//    if(req.body.username.length === 0){
+//     req.check('username','Username is required').custom( () => false )
 
-    }else{
-       const fetchedUser = await User.findOne({username:req.body.username})
-       if(!fetchedUser){
-        req.check('username','User Not Found !').custom(()=>false)
-       }
+//     }else{
+//        const fetchedUser = await User.findOne({username:req.body.username})
+//        if(!fetchedUser){
+//         req.check('username','User Not Found !').custom(()=>false)
+//        }
 
-       if(fetchedUser){
-           if(req.body.password.length === 0 ){
-               req.check('password','Enter your Password').custom(()=>false)
-           }
+//        if(fetchedUser){
+//            if(req.body.password.length === 0 ){
+//                req.check('password','Enter your Password').custom(()=>false)
+//            }
 
-          const passwordMatched =  bcrypt.compareSync(req.body.password , fetchedUser.password)
+//           const passwordMatched =  bcrypt.compareSync(req.body.password , fetchedUser.password)
            
-           if(passwordMatched){
-               req.flash('success_msg','You Have Logged in Successfully')
-               //Problem
-               //TODO:
-               //req.session.authUserId = fetchedUser._id
-           }else{
-            req.check('password',`password Doesn't match !`).custom(()=>false)
-           }
-      }
+//            if(passwordMatched){
+//                req.flash('success_msg','You Have Logged in Successfully')
+//                //Problem
+//                //TODO:
+//                //req.session.authUserId = fetchedUser._id
+//            }else{
+//             req.check('password',`password Doesn't match !`).custom(()=>false)
+//            }
+//       }
        
-    }
+//     }
     
-    if(req.validationErrors()) req.flash('errors' , req.validationErrors()) 
+//     if(req.validationErrors()) req.flash('errors' , req.validationErrors()) 
 
-    res.redirect('/')
+//     res.redirect('/')
     
-}
+// }
 
 
 module.exports.logoutUser = (req,res) => {
-    req.session.authUserId = null ;
-    req.session.user = null ;
+   
     req.flash('seccess_msg', 'You Have Logged Out Successfully')
-
+    req.logout()
     res.redirect('/auth/login')
 
 }
